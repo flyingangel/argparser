@@ -1,4 +1,4 @@
-# Command-line argument parser
+# Command-line arguments parser
 
 The script extract arguments from the arguments of the **script or function** and auto-wire to shell variable
 
@@ -39,8 +39,8 @@ $params = true
 ```
 
 All long opts will wire to the same variable name ie `--help` will populate `$help`  
-All short opts will wire to variable with prefix **opt[letter]** (if not configured otherwise) ie `-h` will populate `$opth`  
-All arguments will wire to variable with prefix **argument[number]** (if not configured otherwise) ie `$argument1, $argument2 ..`
+All short opts will wire to variable with prefix **opt[letter]** ie `-h` will populate `$opth`  
+All arguments will wire to variable with prefix **argument[number]** ie `$argument1, $argument2 ..`
 
 ## Config
 

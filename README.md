@@ -1,6 +1,13 @@
 # Command-line arguments parser
 
-The script extract arguments from the arguments of the **script or function** and auto-wire to shell variable
+The script extract arguments from the arguments of the **script or function** and auto-wire to shell variables
+
+Advantages over the traditional `getopts` :
+* less code to write thus boost development speed
+* variables are auto-populated so no manual assignment needed
+* every option has the visibility of other options so it's easier to do a combination ie `if -a and -b activated, then read --longarg`
+* options and order agnostic, can easily be used in any script without the need to declare `:a:b::cd`; it parses everything the user put into arguments (even garbages)
+* can be applied to top-level script, functions or even pure string
 
 ## How to use
 
@@ -14,7 +21,7 @@ source argparser.sh
 parse_args "$@"
 ```
 
-Now variables will be pre-populated within the environment
+Now variables will be pre-populated within the environment with the following values
 
 ```bash
 $longarg = true
@@ -27,6 +34,10 @@ $optc = true
 $optd = false
 $optD = true
 $optE = false
+
+#boolean opt can now easily be tested with
+if $opta; then do_smt fi
+if [ $optb == true ]; then do_smt fi
 
 $argument1 = simplearg
 $argument2 = composite arg

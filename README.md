@@ -9,6 +9,8 @@ Example
 
 Inside this script/function, simply call
 ```bash
+#make sure to include the function
+source argparser.sh
 parse_args "$@"
 ```
 

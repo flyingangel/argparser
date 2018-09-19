@@ -37,17 +37,19 @@ function testFunc {
         echo "-a activated"
     fi
     
-    if $optb; then
-        echo "-b activated"
-    fi
+    #if $optb == true then
+    $optb && echo "-b activated"
+    ! $optx && echo "-x not activated"
     
-    if $optc; then
-        echo "-c activated"
-    fi
+    #if $optc == true then
+    [ $optc ] && echo "-c activated"
+    [ ! $optc ] && echo "-y activated"
     
-    if $optd; then
-        echo "-d activated"
-    fi
+    #if $optb && $optc then
+    $optb && $optc && echo "-bc activated"
+    
+    #if ! $optd then
+    $optd || echo "-d not activated"
     
     if [ "$optD" == true ]; then
         echo "-D activated"

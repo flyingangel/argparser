@@ -1,6 +1,6 @@
 # Command-line arguments parser
 
-The script extract arguments from the arguments of the **script or function** and auto-wire to shell variables
+The script extract arguments from the arguments of the **script or function** and _auto-wire_ to shell variables
 
 Advantages over the traditional `getopts` :
 * less code to write thus boost development speed
@@ -11,15 +11,21 @@ Advantages over the traditional `getopts` :
 
 ## How to use
 
-Example
-> testFunc -h --params --longarg --longargvalue=someVal --longargspace="space & equal=xyz" simplearg "composite arg" -a -bc -D
+Include this library to your project using git submodule
 
-Inside this script/function, simply call
+    git submodule add https://github.com/flyingangel/argparser.git shell_modules/argparser
+
+Inside your script or even a function, simply call
+
 ```bash
 #make sure to include the function
 source argparser.sh
 parse_args "$@"
 ```
+
+Example of command
+
+> testFunc -h --params --longarg --longargvalue=someVal --longargspace="space & equal=xyz" simplearg "composite arg" -a -bc -D
 
 Now variables will be pre-populated within the environment with the following values
 

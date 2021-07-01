@@ -27,14 +27,19 @@ function parse_args() {
 			_value=true
 		fi
 
-		eval $_name="\$_value"
+		#convert dash to camelcase
+		if [[ $_name =~ "-" ]]; then
+			_name=$(echo "$_name" | awk -F"-" '{for(i=2;i<=NF;i++){$i=toupper(substr($i,1,1)) substr($i,2)}} 1' OFS="")
+		fi
+
+		eval "$_name=\$_value"
 
 		#set short if mapping is defined
 		if [[ "${ARGPARSER_MAP[@]}" =~ "$_name" ]]; then
 			for _i in "${!ARGPARSER_MAP[@]}"; do
-				if [ ${ARGPARSER_MAP[${_i}]} == "$_name" ]; then
+				if [[ ${ARGPARSER_MAP[${_i}]} == "$_name" ]]; then
 					_name=$ARGPARSER_SHORT_PREFIX$_i
-					eval $_name=true
+					eval "$_name"=true
 				fi
 			done
 		fi
@@ -51,12 +56,12 @@ function parse_args() {
 		for _i in $(seq 1 ${#_arg}); do
 			_letter=${_arg:_i-1:1}
 			_name=$ARGPARSER_SHORT_PREFIX$_letter
-			eval $_name=true
+			eval "$_name"=true
 
 			#set long if mapping is defined
-			if [ ${ARGPARSER_MAP[${_letter}]} ]; then
+			if [[ ${ARGPARSER_MAP[${_letter}]} ]]; then
 				_name=${ARGPARSER_MAP[${_letter}]}
-				eval $_name=true
+				eval "$_name"=true
 			fi
 		done
 	}
@@ -66,9 +71,10 @@ function parse_args() {
 		local _name _value
 
 		_name="$ARGPARSER_ARGUMENT_PREFIX$count"
+		# shellcheck disable=SC2034
 		_value=$1
 
-		eval $_name="\$_value"
+		eval "$_name=\$_value"
 	}
 
 	#default short prefix if not configured
@@ -98,7 +104,7 @@ function parse_args() {
 			[[ ! $_nextargument == -* ]] && ((__i++))
 			;;
 		-*)
-			parse_short "$_argument" "$_nextargument"
+			parse_short "$_argument"
 			;;
 		*)
 			((count++))

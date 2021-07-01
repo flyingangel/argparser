@@ -2,18 +2,36 @@
 
 source argparser.sh
 
-echo 'Test case: testFunc -h --params --longarg --longargvalue=someVal --longargspace="space & equal=xyz" --longvaluefollow "longvalue" simplearg "composite arg" -a -bc -D'
+echo "Test case:"
+# shellcheck disable=SC1004
+echo 'testFunc -h \
+	--params \
+	--longarg \
+	--longarg_underscore \
+	--longargvalue=someVal \
+	--longargspace="space & equal=xyz" \
+	--longargfollow "value which follows" \
+	--longarg-dash \
+	--longarg-dash-value="dash value" \
+	--longarg-dash-follow "dash follow" \
+	simplearg "composite arg" \
+	-a -bc -D'
 echo
 echo 'parse_args "$@"'
 echo
 
+# shellcheck disable=SC2154
 function testFunc() {
 	parse_args "$@"
 
 	echo "\$longarg = $longarg"
+	echo "\$longarg_underscore = $longarg_underscore"
 	echo "\$longargvalue = $longargvalue"
 	echo "\$longargspace = $longargspace"
-	echo "\$longvaluefollow = $longvaluefollow"
+	echo "\$longargfollow = $longargfollow"
+	echo "\$longargDash = $longargDash"
+	echo "\$longargDashValue = $longargDashValue"
+	echo "\$longargDashFollow = $longargDashFollow"
 	echo
 	echo "\$opta = $opta"
 	echo "\$optb = $optb"
@@ -34,24 +52,26 @@ function testFunc() {
 	echo "\$params = $params"
 	echo
 
+	#Check method 1 : if true without bracket
 	if $opta; then
 		echo "-a activated"
 	fi
 
-	#if $optb == true then
+	#Check method 2 : linear logic
 	$optb && echo "-b activated"
 	! $optx && echo "-x not activated"
 
-	#if $optc == true then
-	[ $optc ] && echo "-c activated"
-	[ ! $optc ] && echo "-y activated"
+	#Chech method 3 : linear bracket
+	[[ $optc ]] && echo "-c activated"
+	[[ ! $optc ]] && echo "-c not activated"
 
-	#if $optb && $optc then
+	#Combine logic
 	$optb && $optc && echo "-bc activated"
 
-	#if ! $optd then
+	#Inversion check : if ! $optd; then
 	$optd || echo "-d not activated"
 
+	#Check method 4 : traditional explicit
 	if [ "$optD" == true ]; then
 		echo "-D activated"
 	fi
@@ -63,4 +83,16 @@ ARGPARSER_MAP=(
 	[p]=params
 )
 
-testFunc -h --params --longarg --longargvalue=someVal --longargspace="space & equal=xyz" --longvaluefollow "longvalue" simplearg "composite arg" -a -bc -D
+testFunc -h \
+	--params \
+	--longarg \
+	--longarg_underscore \
+	--longargvalue=someVal \
+	--longargspace="space & equal=xyz" \
+	--longargfollow "value which follows" \
+	--longarg-dash \
+	--longarg-dash-value="dash value" \
+	--longarg-dash-follow "dash follow" \
+	simplearg \
+	"composite arg" \
+	-a -bc -D

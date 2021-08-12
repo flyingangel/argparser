@@ -18,21 +18,42 @@ Include this library to your project using git submodule
 Inside your script or even a function, simply call
 
 ```bash
-#make sure to include the function
+#make sure to include the script once then call parse_args
 source argparser.sh
 parse_args "$@"
 ```
 
-Example of command
-
-> testFunc -h --params --longarg --longargvalue=someVal --longargspace="space & equal=xyz" simplearg "composite arg" -a -bc -D
-
-Now variables will be pre-populated within the environment with the following values
+## Example
 
 ```bash
+testCommand -h \
+    --params \
+    --longarg \
+    --longarg_underscore \
+    --longargvalue=someVal \
+    --longargspace="space & equal=xyz" \
+    --longargfollow "value which follows" \
+    --longarg-dash \
+    --longarg-dash-value="dash value" \
+    --longarg-dash-follow "dash follow" \
+    simplearg "composite arg" \
+    -a -bc -D
+```
+
+Then at the beginning of your script or function
+
+```bash
+parse_args "$@"
+
+#Now variables will be pre-populated within the environment with the following values
 $longarg = true
+$longarg_underscore = true
 $longargvalue = someVal
 $longargspace = space & equal=xyz
+$longargfollow = value which follows
+$longargDash = true
+$longargDashValue = dash value
+$longargDashFollow = dash follow
 
 $opta = true
 $optb = true
@@ -40,10 +61,6 @@ $optc = true
 $optd = false
 $optD = true
 $optE = false
-
-#boolean opt can now easily be tested with
-if $opta; then do_smt fi
-if [ $optb == true ]; then do_smt fi
 
 $argument1 = simplearg
 $argument2 = composite arg
@@ -55,11 +72,19 @@ $help = true
 #map -p to --params
 $optp = true
 $params = true
+
+#boolean opt can now easily be tested with
+if $opta; then do_smt fi
+if [ $optb == true ]; then do_smt fi
+[[ $optc ]] && do_case_active
+[[ ! $optd ]] && do_case_inactive
+$optd || do_case_inactive
+[[ $opta && $optb ]] && do_case_both_combine
 ```
 
 All long opts will wire to the same variable name ie `--help` will populate `$help`  
-All short opts will wire to variable with prefix **opt[letter]** ie `-h` will populate `$opth`  
-All arguments will wire to variable with prefix **argument[number]** ie `$argument1, $argument2 ..`
+All short opts will wire to variable with prefix **opt[letter]** i.e `-h` will populate `$opth`  
+All arguments will wire to variable with prefix **argument[number]** i.e `$argument1, $argument2 ..`
 
 ## Config
 
